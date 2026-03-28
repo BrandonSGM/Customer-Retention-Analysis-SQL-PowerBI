@@ -50,7 +50,7 @@ SELECT
 	r.cohort_month,
 	r.month_index,
 	ROUND(
-		r.active_customers * 100.0 / c.cohort_customers,
+		r.active_customers / c.cohort_customers,
 	2
 	) AS retention_rate
 FROM retention_data r
@@ -81,7 +81,6 @@ ORDER BY 1
 
 -- Step 3.2: Customers classification 
 
-
 CREATE VIEW vw_customer_classification AS(
 WITH classification AS (
 SELECT
@@ -100,6 +99,7 @@ FROM classification
 );
 
 -- Step 3.3: Customers behavior summary
+CREATE VIEW vw_customer_behavior_summary AS (
 WITH customer_summary AS(
 SELECT 
 	customer_id, 
@@ -122,5 +122,7 @@ SELECT
 	ROUND(AVG(revenue),2) AS avg_ticket,
 	SUM(CASE WHEN total_orders > 1 THEN 1 ELSE 0 END) AS repeat_customer,
 	SUM(CASE WHEN total_orders = 1 THEN 1 ELSE 0 END) AS one_time_customer
-FROM customer_summary;
-	
+FROM customer_summary
+);
+
+
