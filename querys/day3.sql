@@ -50,8 +50,8 @@ SELECT
 	r.cohort_month,
 	r.month_index,
 	ROUND(
-		r.active_customers / c.cohort_customers,
-	2
+		r.active_customers::numeric / c.cohort_customers,
+	3
 	) AS retention_rate
 FROM retention_data r
 JOIN cohort_size c
@@ -116,13 +116,13 @@ SELECT
 	SUM(total_orders) AS total_orders,
 	ROUND(AVG(total_orders),2) AS avg_orders_per_customer,
 	ROUND(
-		SUM(CASE WHEN total_orders > 1 THEN 1 ELSE 0 END) * 100.0/ COUNT(*)
-	) AS retention_rate,
+		SUM(CASE WHEN total_orders > 1 THEN 1 ELSE 0 END)::numeric/ COUNT(*)
+	,3) AS retention_rate,
 	ROUND(AVG(active_days),2) AS avg_active_days,
 	ROUND(AVG(revenue),2) AS avg_ticket,
 	SUM(CASE WHEN total_orders > 1 THEN 1 ELSE 0 END) AS repeat_customer,
 	SUM(CASE WHEN total_orders = 1 THEN 1 ELSE 0 END) AS one_time_customer
 FROM customer_summary
 );
-
+SELECT * FROM vw_customer_behavior_summary;
 
