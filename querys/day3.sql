@@ -124,5 +124,25 @@ SELECT
 	SUM(CASE WHEN total_orders = 1 THEN 1 ELSE 0 END) AS one_time_customer
 FROM customer_summary
 );
-SELECT * FROM vw_customer_behavior_summary;
+-- Step 3.4: Retention Rate by Segment
+CREATE VIEW vw_customer_retention_base AS (
+WITH customer_metrics AS (
+    SELECT
+        customer_id,
+        COUNT(*) AS total_orders,
+        ROUND(SUM(quantity * unit_price * (1 - discount)), 2) AS revenue
+    FROM fact_customer_orders
+    GROUP BY customer_id
+)
+SELECT
+    customer_id,
+    total_orders,
+    CASE 
+        WHEN total_orders > 1 THEN 1
+        ELSE 0
+    END AS retained_flag,
+    revenue
+FROM customer_metrics
+);
+
 
