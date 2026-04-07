@@ -146,3 +146,16 @@ FROM customer_metrics
 );
 
 
+-- Step 3.5: Customer value summary 
+CREATE VIEW vw_customer_value_summary AS(
+SELECT
+    customer_id,
+    COUNT(order_id) AS total_orders,
+    ROUND(SUM(quantity * unit_price * (1-discount)),2) AS total_revenue,
+    ROUND(AVG(quantity * unit_price * (1-discount)),2) AS avg_order_value,
+    MIN(order_date) AS first_order,
+    MAX(order_date) AS last_order,
+    MAX(order_date) - MIN(order_date) AS customer_lifetime_days
+FROM fact_customer_orders
+GROUP BY customer_id);
+
